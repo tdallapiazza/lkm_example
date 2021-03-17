@@ -1,21 +1,14 @@
-obj-m += lkm_example.o
+obj-m := lkm_example.o
+
+SRC := $(shell pwd)
 
 all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC)
+
+modules_install:
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules_install
 
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-
-test:
-	# We put a — in front of the rmmod command to tell make to ignore
-	# an error in case the module isn’t loaded.
-	-sudo rmmod lkm_example
-
-	# Clear the kernel log without echo
-	sudo dmesg -C
-
-	# Insert the module
-	sudo insmod lkm_example.ko
-
-	# Display the kernel log
-	dmesg
+	rm -f *.o *~ core .depend .*.cmd *.ko *.mod.c
+	rm -f Module.markers Module.symvers modules.order
+	rm -rf .tmp_versions Modules.symvers
