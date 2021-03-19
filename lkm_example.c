@@ -2,6 +2,8 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
+#include <linux/device.h>
+#include <linux/kdev_t>
 #include <asm/uaccess.h>
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Robert W. Oliver II");
@@ -20,6 +22,8 @@ static int major_num;
 static int device_open_count = 0;
 static char msg_buffer[MSG_BUFFER_LEN];
 static char *msg_ptr;
+dev_t dev=0;
+static struct class *devicefileClass;
 
 /* This structure points to all of the device functions */
 static struct file_operations file_ops = {
@@ -88,6 +92,8 @@ static int __init lkm_example_init(void) {
    return major_num;
  } else {
    printk(KERN_INFO "lkm_example module loaded with device major number %d\n", major_num);
+   deviceFileClass=class_create(THIS_MODULE,"lkm_example");
+   device_create( deviceFileClass , NULL , dev ,"lkm_example")
    return 0;
  }
 }
