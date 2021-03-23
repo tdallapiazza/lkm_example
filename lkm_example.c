@@ -107,12 +107,12 @@ static struct file_operations my_fops =
 	.write = my_write
 };
 
-static int __init ofd_init(void)
+static int __init my_init(void)
 {
 	int ret;
 	struct device *dev_ret;
-	printk(KERN_INFO "Hey! Ofd module registered!");
-	if ((ret = alloc_chrdev_region(&first, 0, 1, "ofd")))
+	printk(KERN_INFO "Hey! lkm_example module registered!");
+	if ((ret = alloc_chrdev_region(&first, 0, 1, "lkm_example")))
 	{
 		return ret;
 	}
@@ -123,7 +123,7 @@ static int __init ofd_init(void)
 		return PTR_ERR(cl);
 	}
 
-	if (IS_ERR(dev_ret = device_create(cl, NULL, first, NULL, "ofd")))
+	if (IS_ERR(dev_ret = device_create(cl, NULL, first, NULL, "lkm_example")))
 	{
 		class_destroy(cl);
 		unregister_chrdev_region(first, 1);
@@ -142,18 +142,18 @@ static int __init ofd_init(void)
 	return 0;
 }
 
-static void __exit ofd_exit(void)
+static void __exit my_exit(void)
 {
 	cdev_del(&c_dev);
 	device_destroy(cl, first);
 	class_destroy(cl);
 	unregister_chrdev_region(first, 1);
-	printk(KERN_INFO "Goodby! Ofd module unregistered");
+	printk(KERN_INFO "Goodby! lkm_example module unregistered");
 }
 
-module_init(ofd_init);
-module_exit(ofd_exit);
+module_init(my_init);
+module_exit(my_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Thomas Dalla Piazza <tdallapiazza@digger.ch>");
-MODULE_DESCRIPTION("Our First Driver");
+MODULE_DESCRIPTION("A parrot kernel module driver!");

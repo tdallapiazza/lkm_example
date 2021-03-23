@@ -13,6 +13,7 @@ default:
 
 modules_install:
 	${MAKE} -C ${KERNEL_SRC} M=${PWD} modules_install
+	depmod -A
 
 clean:
 	${MAKE} -C  ${KERNEL_SRC} M=${PWD} clean
@@ -20,5 +21,5 @@ clean:
 # Otherwise KERNELRELEASE is defined; we've been invoked from the
 # kernel build system and can use its language.
 else
-	obj-m := ofd.o
+	obj-m := lkm_example.o
 endif
